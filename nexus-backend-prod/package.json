@@ -13,7 +13,9 @@
     "migrate": "ts-node src/scripts/migrate.ts",
     "migrate:up": "ts-node src/scripts/migrate.ts",
     "migrate:status": "ts-node src/scripts/migrate.ts status",
-    "encrypt:key": "ts-node src/scripts/encryptKey.ts"
+    "encrypt:key": "ts-node src/scripts/encryptKey.ts",
+    "test:blockchain": "ts-node scripts/test-blockchain.ts",
+    "generate:wallet": "bash ../scripts/generate-admin-wallet.sh"
   },
   "dependencies": {
     "@fastify/cors": "^9.0.0",
