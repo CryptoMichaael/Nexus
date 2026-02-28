@@ -3,7 +3,7 @@
  * Centralized theming for easy rebranding
  */
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 export interface ThemeConfig {
   primaryColor: string;

@@ -3,7 +3,7 @@
  * Styled using centralized theme colors
  */
 
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 export interface CardProps {
   children: ReactNode;
