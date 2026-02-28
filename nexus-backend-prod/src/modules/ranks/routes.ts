@@ -4,9 +4,9 @@
  */
 
 import { FastifyInstance, FastifyRequest } from 'fastify'
-import { RankService } from '../services/rank.service'
-import { WeeklyRankPoolService } from '../services/weeklyRankPool.service'
-import { pool } from '../db/pool'
+import { RankService } from '../../services/rank.service'
+import { WeeklyRankPoolService } from '../../services/weeklyRankPool.service'
+import { pool } from '../../db/pool'
 import { requireAdminMFA } from '../../middlewares/adminAuth'
 
 const rankService = new RankService(pool)
