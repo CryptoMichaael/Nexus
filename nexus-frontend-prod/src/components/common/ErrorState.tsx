@@ -8,14 +8,11 @@ export function ErrorState({
   onRetry?: () => void
 }) {
   return (
-    <div className="bg-white rounded-lg border border-red-200 p-6">
-      <div className="text-red-600 font-semibold mb-1">{title}</div>
-      <div className="text-sm text-slate-600 mb-4">{message}</div>
+    <div className="defi-card p-6 border-red-500/20">
+      <div className="text-red-200 font-semibold mb-1">{title}</div>
+      <div className="text-sm text-slate-300 mb-4">{message}</div>
       {onRetry ? (
-        <button
-          className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700"
-          onClick={onRetry}
-        >
+        <button className="defi-btn" onClick={onRetry}>
           Retry
         </button>
       ) : null}

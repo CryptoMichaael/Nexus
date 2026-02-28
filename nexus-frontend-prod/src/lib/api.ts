@@ -156,6 +156,22 @@ export const api = {
     return toCursorResponse(mapped, payload.nextCursor || null, limit)
   },
 
+  // Tree root
+  getTreeRoot: async (): Promise<TreeNode> => {
+    const u = USE_MOCKS ? auth.getUser() : await me()
+    if (!u) throw new Error('Not authenticated')
+
+    const addr = String((u as any).address || '')
+    return {
+      id: String((u as any).id || addr),
+      userId: addr || String((u as any).id),
+      name: addr ? shorten(addr) : String((u as any).id),
+      children: [],
+      volume: 0,
+      rewardEarned: 0,
+    }
+  },
+
   // Tree children
   getTreeChildren: async (
     parentId: string,

@@ -19,20 +19,13 @@ export function Deposits() {
   const { data: depositsData, isLoading, error, refetch } = useQuery({
     queryKey: ['deposits', cursor, statusFilter, searchQuery],
     queryFn: () =>
-      api.getDeposits(
-        cursor,
-        20,
-        statusFilter || undefined,
-        searchQuery || undefined
-      ),
+      api.getDeposits(cursor, 20, statusFilter || undefined, searchQuery || undefined),
   })
 
   const handleLoadMore = () => {
     if (depositsData?.nextCursor) {
       setCursor(depositsData.nextCursor)
-      if (depositsData.data) {
-        setAllDeposits((prev) => [...prev, ...depositsData.data])
-      }
+      if (depositsData.data) setAllDeposits((prev) => [...prev, ...depositsData.data])
     }
   }
 
@@ -50,10 +43,10 @@ export function Deposits() {
 
   if (error) {
     return (
-      <PageShell title="Deposits">
+      <PageShell title="Staking">
         <ErrorState
-          title="Failed to load deposits"
-          message="Could not fetch deposit data."
+          title="Failed to load staking history"
+          message="Could not fetch staking data."
           onRetry={() => refetch()}
         />
       </PageShell>
@@ -66,56 +59,41 @@ export function Deposits() {
     {
       key: 'txHash' as const,
       label: 'TX Hash',
-      render: (val: unknown) => (
-        <code className="text-xs bg-slate-100 px-2 py-1 rounded">
-          {String(val).slice(0, 16)}...
-        </code>
-      ),
+      render: (val: unknown) => <code className="defi-code">{String(val).slice(0, 16)}...</code>,
     },
     {
       key: 'amount' as const,
       label: 'Amount',
       render: (val: unknown) => (
-        <span className="font-semibold">
-          ${new Intl.NumberFormat('en-US').format(val as number)}
-        </span>
+        <span className="font-semibold">${new Intl.NumberFormat('en-US').format(val as number)}</span>
       ),
     },
     {
       key: 'status' as const,
       label: 'Status',
       render: (val: unknown) => {
-        const variant =
-          val === 'confirmed'
-            ? 'success'
-            : val === 'pending'
-              ? 'warning'
-              : 'error'
+        const variant = val === 'confirmed' ? 'success' : val === 'pending' ? 'warning' : 'error'
         return <Badge label={String(val)} variant={variant} />
       },
     },
     {
       key: 'createdAt' as const,
       label: 'Date',
-      render: (val: unknown) =>
-        new Date(val as string).toLocaleDateString('en-US'),
+      render: (val: unknown) => new Date(val as string).toLocaleDateString('en-US'),
     },
   ]
 
   return (
-    <PageShell title="Deposits">
+    <PageShell title="Staking">
       <div className="space-y-6">
-        {/* Filters */}
-        <div className="bg-white rounded-lg border border-slate-200 p-6">
+        <div className="defi-card p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Status
-              </label>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Status</label>
               <select
                 value={statusFilter}
                 onChange={(e) => handleStatusChange(e.target.value)}
-                className="w-full px-4 py-2 border border-slate-300 rounded-md focus:outline-none focus:border-primary-600"
+                className="defi-select"
               >
                 <option value="">All Statuses</option>
                 <option value="pending">Pending</option>
@@ -125,37 +103,30 @@ export function Deposits() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Search
-              </label>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Search</label>
               <input
                 type="text"
-                placeholder="Search by TX hash..."
+                placeholder="Search by TX hash…"
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
-                className="w-full px-4 py-2 border border-slate-300 rounded-md focus:outline-none focus:border-primary-600"
+                className="defi-input"
               />
             </div>
           </div>
         </div>
 
-        {/* Table */}
         {isLoading && !displayDeposits.length ? (
           <Skeleton />
         ) : displayDeposits.length === 0 ? (
           <EmptyState
-            icon="💾"
-            title="No deposits"
-            description="You haven't made any deposits yet."
+            icon="🔒"
+            title="No staking activity"
+            description="Your staking history will appear here."
           />
         ) : (
           <>
             <Table<Deposit> columns={columns} data={displayDeposits} />
-            <Pagination
-              hasMore={depositsData?.hasMore || false}
-              isLoading={isLoading}
-              onLoadMore={handleLoadMore}
-            />
+            <Pagination hasMore={depositsData?.hasMore || false} isLoading={isLoading} onLoadMore={handleLoadMore} />
           </>
         )}
       </div>

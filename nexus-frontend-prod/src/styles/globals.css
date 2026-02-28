@@ -12,6 +12,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* DeFi background baseline */
+  background: radial-gradient(1200px 600px at 20% 0%, rgba(244, 197, 66, 0.10), transparent 60%),
+    radial-gradient(900px 500px at 80% 10%, rgba(75, 75, 0, 0.18), transparent 55%),
+    linear-gradient(180deg, #050505 0%, #070707 50%, #050505 100%);
+  color: #e2e8f0;
 }
 
 * {
@@ -21,3 +27,109 @@ body {
 code {
   font-family: 'Courier New', monospace;
 }
+
+@layer components {
+  .defi-bg {
+    position: relative;
+    min-height: 100vh;
+  }
+
+  .defi-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.22;
+    background-image:
+      linear-gradient(rgba(244, 197, 66, 0.10) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(244, 197, 66, 0.10) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: radial-gradient(circle at 30% 10%, black 0%, transparent 60%);
+  }
+
+  .defi-card {
+    @apply rounded-xl;
+    background: rgba(10, 8, 8, 0.72);
+    border: 1px solid rgba(244, 197, 66, 0.20);
+    box-shadow: 0 0 0 1px rgba(244, 197, 66, 0.05), 0 12px 40px rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(10px);
+  }
+
+  .defi-card:hover {
+    border-color: rgba(244, 197, 66, 0.35);
+    box-shadow: 0 0 0 1px rgba(244, 197, 66, 0.10), 0 0 28px rgba(244, 197, 66, 0.10),
+      0 18px 56px rgba(0, 0, 0, 0.65);
+  }
+
+  .defi-pill {
+    @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs;
+    background: rgba(244, 197, 66, 0.10);
+    border: 1px solid rgba(244, 197, 66, 0.22);
+    color: rgba(255, 234, 163, 0.95);
+  }
+
+  .defi-divider {
+    height: 3px;
+    width: 100%;
+    background: linear-gradient(90deg, rgba(244, 197, 66, 0.0), rgba(244, 197, 66, 0.75), rgba(244, 197, 66, 0.0));
+    filter: drop-shadow(0 0 10px rgba(244, 197, 66, 0.20));
+  }
+
+  .defi-input {
+    @apply w-full rounded-md px-4 py-2 outline-none transition;
+    background: rgba(15, 23, 42, 0.35);
+    border: 1px solid rgba(244, 197, 66, 0.18);
+    color: #e2e8f0;
+  }
+
+  .defi-input::placeholder {
+    color: rgba(148, 163, 184, 0.75);
+  }
+
+  .defi-input:focus {
+    border-color: rgba(244, 197, 66, 0.45);
+    box-shadow: 0 0 0 3px rgba(244, 197, 66, 0.12);
+  }
+
+  .defi-select {
+    @apply defi-input;
+    appearance: none;
+  }
+
+  .defi-btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-5 py-2 text-sm font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed;
+    background: rgba(10, 8, 8, 0.65);
+    border: 1px solid rgba(244, 197, 66, 0.25);
+    color: rgba(255, 234, 163, 0.95);
+  }
+
+  .defi-btn:hover {
+    background: rgba(244, 197, 66, 0.10);
+    border-color: rgba(244, 197, 66, 0.45);
+    box-shadow: 0 0 18px rgba(244, 197, 66, 0.10);
+  }
+
+  .defi-btn-primary {
+    @apply defi-btn;
+    background: linear-gradient(135deg, rgba(244, 197, 66, 0.95), rgba(212, 163, 36, 0.95));
+    border-color: rgba(244, 197, 66, 0.55);
+    color: rgba(10, 8, 8, 0.95);
+  }
+
+  .defi-btn-primary:hover {
+    filter: brightness(1.05);
+    box-shadow: 0 0 26px rgba(244, 197, 66, 0.20);
+  }
+
+  .defi-code {
+    @apply font-mono text-xs rounded px-2 py-1;
+    background: rgba(15, 23, 42, 0.45);
+    border: 1px solid rgba(244, 197, 66, 0.15);
+    color: rgba(226, 232, 240, 0.95);
+  }
+
+  .glow-text {
+    text-shadow: 0 0 3px rgba(244, 197, 66, 0.55), 0 0 14px rgba(244, 197, 66, 0.25);
+  }
+}
+

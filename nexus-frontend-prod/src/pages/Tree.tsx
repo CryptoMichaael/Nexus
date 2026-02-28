@@ -25,20 +25,20 @@ function TreeNodeComponent({
 }) {
   return (
     <div className="mb-2">
-      <div className="flex items-start gap-2 p-2 hover:bg-slate-50 rounded cursor-pointer group">
+      <div className="flex items-start gap-2 p-3 hover:bg-primary-600/5 rounded cursor-pointer group border border-primary-500/10">
         <button
           onClick={onToggle}
-          className="text-slate-500 hover:text-slate-700 transition-colors flex-shrink-0 mt-1"
+          className="text-primary-100 hover:text-primary-50 transition-colors flex-shrink-0 mt-1"
         >
           {isExpanded ? '▼' : '▶'}
         </button>
         <div className="flex-1 min-w-0">
-          <p className="font-medium text-slate-900 truncate">{node.name}</p>
-          <p className="text-xs text-slate-500 truncate">{node.userId}</p>
+          <p className="font-medium text-slate-100 truncate">{node.name}</p>
+          <p className="text-xs text-slate-400 truncate">{node.userId}</p>
         </div>
       </div>
       {isExpanded && children ? (
-        <div className="ml-4 border-l border-slate-300 pl-2">{children}</div>
+        <div className="ml-4 border-l border-primary-500/20 pl-3 mt-2">{children}</div>
       ) : null}
     </div>
   )
@@ -61,52 +61,59 @@ function TreeNodeChildrenLoader({ parentId }: { parentId: string }) {
     }
   }
 
-  const displayChildren = cursor ? loaded : data?.data || []
-
-  const toggleNode = (nodeId: string) => {
-    setExpandedNodes((prev) => ({ ...prev, [nodeId]: !prev[nodeId] }))
-  }
+  const display = cursor ? loaded : data?.data || []
 
   if (error) {
-    return <div className="text-sm text-red-600 p-2">Failed to load children</div>
+    return (
+      <div className="ml-4">
+        <ErrorState title="Failed to load map" message="Could not fetch referral map nodes." />
+      </div>
+    )
+  }
+
+  if (isLoading && display.length === 0) {
+    return (
+      <div className="ml-4">
+        <Skeleton />
+      </div>
+    )
   }
 
   return (
-    <>
-      {displayChildren.map((child) => {
-        const expanded = expandedNodes[child.id] || false
+    <div>
+      {display.map((child) => {
+        const isExpanded = !!expandedNodes[child.userId]
         return (
           <TreeNodeComponent
-            key={child.id}
+            key={child.userId}
             node={child}
-            isExpanded={expanded}
-            onToggle={() => toggleNode(child.id)}
+            isExpanded={isExpanded}
+            onToggle={() =>
+              setExpandedNodes((prev) => ({ ...prev, [child.userId]: !prev[child.userId] }))
+            }
           >
-            {expanded ? <TreeNodeChildrenLoader parentId={child.id} /> : null}
+            {isExpanded ? <TreeNodeChildrenLoader parentId={child.userId} /> : null}
           </TreeNodeComponent>
         )
       })}
 
       <Pagination hasMore={data?.hasMore || false} isLoading={isLoading} onLoadMore={handleLoadMore} />
-    </>
+    </div>
   )
 }
 
 export function Tree() {
-  const [expandedRoot, setExpandedRoot] = useState(true)
-
-  const { data: meData, isLoading, error, refetch } = useQuery({
-    queryKey: ['me'],
-    queryFn: () => api.me(),
-    retry: false,
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ['team', 'root'],
+    queryFn: () => api.getTreeRoot(),
   })
 
   if (error) {
     return (
-      <PageShell title="Tree View">
+      <PageShell title="Referral Map">
         <ErrorState
-          title="Failed to load profile"
-          message="Please login again and retry."
+          title="Failed to load referral map"
+          message="Could not fetch your referral map data."
           onRetry={() => refetch()}
         />
       </PageShell>
@@ -115,40 +122,29 @@ export function Tree() {
 
   if (isLoading) {
     return (
-      <PageShell title="Tree View">
+      <PageShell title="Referral Map">
         <Skeleton />
       </PageShell>
     )
   }
 
-  const rootId = String(meData?.id || '')
+  if (!data) {
+    return (
+      <PageShell title="Referral Map">
+        <ErrorState title="No data" message="Referral map is unavailable." />
+      </PageShell>
+    )
+  }
 
   return (
-    <PageShell title="Tree View">
-      <div className="space-y-4">
-        <div className="text-sm text-slate-600">
-          Click on nodes to expand and view their children.
+    <PageShell title="Referral Map">
+      <div className="defi-card p-6">
+        <div className="text-sm text-slate-300 mb-4">
+          Expand nodes to explore your community structure.
         </div>
-
-        <div className="bg-white rounded-lg border border-slate-200 p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <button
-              onClick={() => setExpandedRoot(!expandedRoot)}
-              className="text-slate-500 hover:text-slate-700 transition-colors"
-            >
-              {expandedRoot ? '▼' : '▶'}
-            </button>
-            <span className="font-semibold text-slate-900">Your Network</span>
-          </div>
-
-          {expandedRoot && rootId ? (
-            <div className="ml-2">
-              <TreeNodeChildrenLoader parentId={rootId} />
-            </div>
-          ) : (
-            <div className="text-sm text-slate-600">No root user found.</div>
-          )}
-        </div>
+        <TreeNodeComponent node={data} isExpanded={true} onToggle={() => {}}>
+          <TreeNodeChildrenLoader parentId={data.userId} />
+        </TreeNodeComponent>
       </div>
     </PageShell>
   )

@@ -18,21 +18,13 @@ export function Ledger() {
 
   const { data: ledgerData, isLoading, error, refetch } = useQuery({
     queryKey: ['ledger', cursor, typeFilter, statusFilter],
-    queryFn: () =>
-      api.getLedger(
-        cursor,
-        20,
-        typeFilter || undefined,
-        statusFilter || undefined
-      ),
+    queryFn: () => api.getLedger(cursor, 20, typeFilter || undefined, statusFilter || undefined),
   })
 
   const handleLoadMore = () => {
     if (ledgerData?.nextCursor) {
       setCursor(ledgerData.nextCursor)
-      if (ledgerData.data) {
-        setAllEntries((prev) => [...prev, ...ledgerData.data])
-      }
+      if (ledgerData.data) setAllEntries((prev) => [...prev, ...ledgerData.data])
     }
   }
 
@@ -50,10 +42,10 @@ export function Ledger() {
 
   if (error) {
     return (
-      <PageShell title="Ledger">
+      <PageShell title="Activity">
         <ErrorState
-          title="Failed to load ledger"
-          message="Could not fetch ledger data."
+          title="Failed to load activity"
+          message="Could not fetch activity data."
           onRetry={() => refetch()}
         />
       </PageShell>
@@ -73,77 +65,54 @@ export function Ledger() {
           withdrawal: 'warning',
           adjustment: 'default',
         }
-        const key = String(val)
-        const variant = variantMap[key] || 'default'
-        return <Badge label={key} variant={variant} />
+        const raw = String(val)
+        const label = raw === 'withdrawal' ? 'claim' : raw === 'deposit' ? 'stake' : raw
+        const variant = variantMap[raw] || 'default'
+        return <Badge label={label} variant={variant} />
       },
     },
     {
       key: 'amount' as const,
       label: 'Amount',
       render: (val: unknown) => (
-        <span className="font-semibold">
-          ${new Intl.NumberFormat('en-US').format(val as number)}
-        </span>
+        <span className="font-semibold">${new Intl.NumberFormat('en-US').format(val as number)}</span>
       ),
     },
-    {
-      key: 'description' as const,
-      label: 'Description',
-    },
+    { key: 'description' as const, label: 'Description' },
     {
       key: 'status' as const,
       label: 'Status',
       render: (val: unknown) => {
-        const variant =
-          val === 'completed'
-            ? 'success'
-            : val === 'pending'
-              ? 'warning'
-              : 'error'
+        const variant = val === 'completed' ? 'success' : val === 'pending' ? 'warning' : 'error'
         return <Badge label={String(val)} variant={variant} />
       },
     },
     {
       key: 'createdAt' as const,
       label: 'Date',
-      render: (val: unknown) =>
-        new Date(val as string).toLocaleDateString('en-US'),
+      render: (val: unknown) => new Date(val as string).toLocaleDateString('en-US'),
     },
   ]
 
   return (
-    <PageShell title="Ledger">
+    <PageShell title="Activity">
       <div className="space-y-6">
-        {/* Filters */}
-        <div className="bg-white rounded-lg border border-slate-200 p-6">
+        <div className="defi-card p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Type
-              </label>
-              <select
-                value={typeFilter}
-                onChange={(e) => handleTypeChange(e.target.value)}
-                className="w-full px-4 py-2 border border-slate-300 rounded-md focus:outline-none focus:border-primary-600"
-              >
+              <label className="block text-sm font-medium text-slate-300 mb-2">Type</label>
+              <select value={typeFilter} onChange={(e) => handleTypeChange(e.target.value)} className="defi-select">
                 <option value="">All Types</option>
                 <option value="reward">Reward</option>
-                <option value="deposit">Deposit</option>
-                <option value="withdrawal">Withdrawal</option>
+                <option value="deposit">Stake</option>
+                <option value="withdrawal">Claim</option>
                 <option value="adjustment">Adjustment</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Status
-              </label>
-              <select
-                value={statusFilter}
-                onChange={(e) => handleStatusChange(e.target.value)}
-                className="w-full px-4 py-2 border border-slate-300 rounded-md focus:outline-none focus:border-primary-600"
-              >
+              <label className="block text-sm font-medium text-slate-300 mb-2">Status</label>
+              <select value={statusFilter} onChange={(e) => handleStatusChange(e.target.value)} className="defi-select">
                 <option value="">All Statuses</option>
                 <option value="pending">Pending</option>
                 <option value="completed">Completed</option>
@@ -153,23 +122,14 @@ export function Ledger() {
           </div>
         </div>
 
-        {/* Table */}
         {isLoading && !displayEntries.length ? (
           <Skeleton />
         ) : displayEntries.length === 0 ? (
-          <EmptyState
-            icon="📋"
-            title="No ledger entries"
-            description="Your ledger is empty."
-          />
+          <EmptyState icon="📋" title="No activity" description="Your protocol activity will appear here." />
         ) : (
           <>
             <Table<LedgerEntry> columns={columns} data={displayEntries} />
-            <Pagination
-              hasMore={ledgerData?.hasMore || false}
-              isLoading={isLoading}
-              onLoadMore={handleLoadMore}
-            />
+            <Pagination hasMore={ledgerData?.hasMore || false} isLoading={isLoading} onLoadMore={handleLoadMore} />
           </>
         )}
       </div>

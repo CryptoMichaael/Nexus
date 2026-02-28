@@ -16,10 +16,10 @@ export function NetworkOverview() {
 
   if (error) {
     return (
-      <PageShell title="Network Overview">
+      <PageShell title="Community Overview">
         <ErrorState
-          title="Failed to load levels"
-          message="Could not fetch level summary data."
+          title="Failed to load community"
+          message="Could not fetch community summary data."
           onRetry={() => refetch()}
         />
       </PageShell>
@@ -28,7 +28,7 @@ export function NetworkOverview() {
 
   if (isLoading) {
     return (
-      <PageShell title="Network Overview">
+      <PageShell title="Community Overview">
         <Skeleton />
       </PageShell>
     )
@@ -36,11 +36,11 @@ export function NetworkOverview() {
 
   if (!levels || levels.length === 0) {
     return (
-      <PageShell title="Network Overview">
+      <PageShell title="Community Overview">
         <EmptyState
-          icon="👥"
-          title="No level data"
-          description="Your network doesn't have any level information yet."
+          icon="🧭"
+          title="No community data"
+          description="When your referrals grow, level stats will appear here."
         />
       </PageShell>
     )
@@ -50,42 +50,29 @@ export function NetworkOverview() {
     {
       key: 'level' as const,
       label: 'Level',
-      render: (val: unknown) => (
-        <Badge label={`Level ${String(val)}`} variant="info" />
-      ),
+      render: (val: unknown) => <Badge label={`Level ${String(val)}`} variant="info" />,
       width: '100px',
     },
     {
       key: 'members' as const,
-      label: 'Members',
-      render: (val: unknown) => (
-        <span className="font-semibold">{String(val)}</span>
-      ),
+      label: 'Referrals',
+      render: (val: unknown) => <span className="font-semibold">{String(val)}</span>,
     },
     {
       key: 'totalVolume' as const,
-      label: 'Total Volume',
+      label: 'Total Staked',
       render: (val: unknown) => `$${new Intl.NumberFormat('en-US').format(val as number)}`,
     },
     {
       key: 'totalReward' as const,
-      label: 'Total Reward',
+      label: 'Total Rewards',
       render: (val: unknown) => `$${new Intl.NumberFormat('en-US').format(val as number)}`,
     },
   ]
 
   return (
-    <PageShell title="Network Overview">
-      <div className="mb-4">
-        <p className="text-slate-600">
-          Showing {levels.length} dynamic level(s) from backend.
-        </p>
-      </div>
-      <Table<LevelSummary>
-        columns={columns}
-        data={levels}
-        keyField="level"
-      />
+    <PageShell title="Community Overview">
+      <Table<LevelSummary> columns={columns} data={levels} keyField="level" />
     </PageShell>
   )
 }

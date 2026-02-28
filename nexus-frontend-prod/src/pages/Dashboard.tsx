@@ -2,8 +2,6 @@ import { useQuery } from '@tanstack/react-query'
 import { PageShell } from '../components/layout/PageShell'
 import { KpiCard } from '../components/common/KpiCard'
 import { ErrorState } from '../components/common/ErrorState'
-import { ROIDashboard } from '../components/ROIDashboard'
-import { RankCard } from '../components/RankCard'
 import { api } from '../lib/api'
 
 export function Dashboard() {
@@ -27,66 +25,17 @@ export function Dashboard() {
 
   return (
     <PageShell title="Dashboard">
-      {/* Summary KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <KpiCard
-          label="Wallet Balance"
-          value={data?.walletBalance || 0}
-          icon="💰"
-          loading={isLoading}
-        />
-        <KpiCard
-          label="Total Earned"
-          value={data?.totalEarned || 0}
-          icon="📈"
-          loading={isLoading}
-        />
-        <KpiCard
-          label="Total Withdrawn"
-          value={data?.totalWithdrawn || 0}
-          icon="💸"
-          loading={isLoading}
-        />
-        <KpiCard
-          label="Pending Withdrawals"
-          value={data?.pendingWithdrawals || 0}
-          icon="⏳"
-          loading={isLoading}
-        />
+        <KpiCard label="Staked Balance" value={data?.walletBalance || 0} icon="🪙" loading={isLoading} />
+        <KpiCard label="Rewards Earned" value={data?.totalEarned || 0} icon="✨" loading={isLoading} />
+        <KpiCard label="Total Claimed" value={data?.totalWithdrawn || 0} icon="🧾" loading={isLoading} />
+        <KpiCard label="Pending Claims" value={data?.pendingWithdrawals || 0} icon="⏳" loading={isLoading} />
       </div>
 
-      {/* Team Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <KpiCard
-          label="Total Team Size"
-          value={data?.totalTeamSize || 0}
-          icon="👥"
-          loading={isLoading}
-        />
-        <KpiCard
-          label="Direct Referrals"
-          value={data?.directReferrals || 0}
-          icon="👤"
-          loading={isLoading}
-        />
-        <KpiCard
-          label="Total Deposit Volume"
-          value={data?.totalDepositVolume || 0}
-          icon="📦"
-          loading={isLoading}
-        />
-      </div>
-
-      {/* Rank Progress Section */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Rank & MLM</h2>
-        <RankCard />
-      </div>
-
-      {/* ROI Dashboard Section */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">ROI Earnings</h2>
-        <ROIDashboard />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <KpiCard label="Referral Network Size" value={data?.totalTeamSize || 0} icon="🧠" loading={isLoading} />
+        <KpiCard label="Direct Invites" value={data?.directReferrals || 0} icon="🤝" loading={isLoading} />
+        <KpiCard label="Total Staked Volume" value={data?.totalDepositVolume || 0} icon="🔒" loading={isLoading} />
       </div>
     </PageShell>
   )

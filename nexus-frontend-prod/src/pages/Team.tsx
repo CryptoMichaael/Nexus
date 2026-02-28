@@ -51,10 +51,10 @@ export function Team() {
 
   if (error) {
     return (
-      <PageShell title="Team">
+      <PageShell title="Referrals">
         <ErrorState
-          title="Failed to load team"
-          message="Could not fetch team member data."
+          title="Failed to load referrals"
+          message="Could not fetch referral data."
           onRetry={() => refetch()}
         />
       </PageShell>
@@ -64,111 +64,77 @@ export function Team() {
   const displayMembers = cursor ? allMembers : membersData?.data || []
 
   const columns = [
-    {
-      key: 'userId' as const,
-      label: 'User ID',
-      width: '120px',
-    },
-    {
-      key: 'name' as const,
-      label: 'Name',
-    },
+    { key: 'userId' as const, label: 'User ID', width: '120px' },
+    { key: 'name' as const, label: 'Name' },
     {
       key: 'level' as const,
       label: 'Level',
-      render: (val: unknown) => (
-        <Badge label={`Level ${val}`} variant="info" />
-      ),
+      render: (val: unknown) => <Badge label={`Level ${val}`} variant="info" />,
       width: '100px',
     },
     {
       key: 'status' as const,
       label: 'Status',
       render: (val: unknown) => {
-        const variant =
-          val === 'active'
-            ? 'success'
-            : val === 'inactive'
-              ? 'warning'
-              : 'error'
+        const variant = val === 'active' ? 'success' : val === 'inactive' ? 'warning' : 'error'
         return <Badge label={String(val)} variant={variant} />
       },
       width: '100px',
     },
     {
       key: 'volume' as const,
-      label: 'Volume',
+      label: 'Staked Volume',
       render: (val: unknown) => `$${new Intl.NumberFormat('en-US').format(val as number)}`,
     },
     {
       key: 'rewardEarned' as const,
-      label: 'Reward Earned',
+      label: 'Rewards Earned',
       render: (val: unknown) => `$${new Intl.NumberFormat('en-US').format(val as number)}`,
     },
   ]
 
   return (
-    <PageShell title="Team">
+    <PageShell title="Referrals">
       <div className="space-y-6">
-        {/* Filters */}
-        <div className="bg-white rounded-lg border border-slate-200 p-6">
+        <div className="defi-card p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Level selector - dynamic from API */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Filter by Level
-              </label>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Filter by Level</label>
               <select
                 value={selectedLevel || ''}
-                onChange={(e) =>
-                  handleLevelChange(
-                    e.target.value ? parseInt(e.target.value) : undefined
-                  )
-                }
-                className="w-full px-4 py-2 border border-slate-300 rounded-md focus:outline-none focus:border-primary-600"
+                onChange={(e) => handleLevelChange(e.target.value ? Number(e.target.value) : undefined)}
+                className="defi-select"
               >
                 <option value="">All Levels</option>
-                {levels?.map((level) => (
-                  <option key={level.level} value={level.level}>
-                    Level {level.level} ({level.members} members)
+                {(levels || []).map((l: any) => (
+                  <option key={l.level} value={l.level}>
+                    Level {l.level}
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* Search */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Search User
-              </label>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Search</label>
               <input
                 type="text"
-                placeholder="Search by userId or name..."
+                placeholder="Search referral…"
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
-                className="w-full px-4 py-2 border border-slate-300 rounded-md focus:outline-none focus:border-primary-600"
+                className="defi-input"
               />
             </div>
           </div>
         </div>
 
-        {/* Table */}
         {isLoading && !displayMembers.length ? (
           <Skeleton />
         ) : displayMembers.length === 0 ? (
-          <EmptyState
-            icon="👥"
-            title="No members found"
-            description="Try adjusting your filters or search query."
-          />
+          <EmptyState icon="🤝" title="No referrals" description="Your referral list will appear here." />
         ) : (
           <>
             <Table<TeamMember> columns={columns} data={displayMembers} />
-            <Pagination
-              hasMore={membersData?.hasMore || false}
-              isLoading={isLoading}
-              onLoadMore={handleLoadMore}
-            />
+            <Pagination hasMore={membersData?.hasMore || false} isLoading={isLoading} onLoadMore={handleLoadMore} />
           </>
         )}
       </div>

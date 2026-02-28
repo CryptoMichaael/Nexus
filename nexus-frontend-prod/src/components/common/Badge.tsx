@@ -12,11 +12,11 @@ export function Badge({
   variant?: BadgeVariant
 }) {
   const styles: Record<BadgeVariant, string> = {
-    success: 'bg-green-50 text-green-700 border-green-200',
-    warning: 'bg-amber-50 text-amber-700 border-amber-200',
-    error: 'bg-red-50 text-red-700 border-red-200',
-    info: 'bg-blue-50 text-blue-700 border-blue-200',
-    default: 'bg-slate-100 text-slate-700 border-slate-200',
+    success: 'bg-emerald-500/10 text-emerald-200 border-emerald-500/20',
+    warning: 'bg-amber-500/10 text-amber-200 border-amber-500/20',
+    error: 'bg-red-500/10 text-red-200 border-red-500/20',
+    info: 'bg-primary-600/10 text-primary-100 border-primary-500/20',
+    default: 'bg-slate-500/10 text-slate-200 border-slate-500/20',
   }
 
   return (
