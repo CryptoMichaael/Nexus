@@ -9,8 +9,10 @@
 import { Pool, PoolClient } from 'pg';
 import { logger } from '../../config/logger';
 import { toAtomic, fromAtomic, dbToBigInt, bigIntToDb } from '../../utils/bigintMath';
+import { RankService } from '../rank.service';
 
 const VALID_TOKENS = ['USDT', 'ETH'];
+const MIN_DEPOSIT_FOR_RANK = toAtomic('100'); // $100 minimum
 
 export interface DepositData {
   txHash: string;
@@ -33,7 +35,11 @@ export interface DepositResult {
 }
 
 export class DepositProcessorService {
-  constructor(private pool: Pool) {}
+  private rankService: RankService;
+  
+  constructor(private pool: Pool) {
+    this.rankService = new RankService(pool);
+  }
 
   /**
    * ✅ SECURE: Idempotent deposit processing with database-level uniqueness
@@ -172,6 +178,26 @@ export class DepositProcessorService {
         amount: fromAtomic(amountAtomic),
         walletAddress: depositData.walletAddress
       }, 'New deposit processed successfully');
+
+      // ✅ Check and upgrade rank (after commit, separate transaction)
+      // Only check if deposit >= $100
+      if (amountAtomic >= MIN_DEPOSIT_FOR_RANK) {
+        try {
+          const rankResult = await this.rankService.checkAndUpgradeRank(userId);
+          
+          if (rankResult.upgraded && rankResult.newRank > 0) {
+            logger.info({
+              userId,
+              walletAddress: depositData.walletAddress,
+              newRank: rankResult.newRank,
+              rankName: rankResult.rankName
+            }, '🏆 User rank upgraded after deposit');
+          }
+        } catch (rankErr) {
+          // Don't fail deposit if rank check fails
+          logger.error({ err: rankErr, userId }, 'Rank check failed after deposit');
+        }
+      }
 
       return {
         success: true,

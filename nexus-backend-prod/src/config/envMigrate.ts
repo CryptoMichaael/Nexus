@@ -1,7 +1,10 @@
 import process from 'process'
 import { z } from 'zod'
 import dotenv from 'dotenv'
+import path from 'path'
 
+// Load .env.local first (for local dev), then fall back to .env
+dotenv.config({ path: path.join(__dirname, '../../.env.local') })
 dotenv.config()
 
 /**

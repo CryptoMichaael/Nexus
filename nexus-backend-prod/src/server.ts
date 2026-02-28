@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import { buildApp } from './app'
 import { logger } from './config/logger'
 import { env } from './config/envServer'

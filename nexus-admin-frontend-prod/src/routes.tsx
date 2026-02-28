@@ -8,6 +8,7 @@ const AdminDashboard = lazy(() => import('./pages/Dashboard'))
 const UsersPage = lazy(() => import('./pages/Users'))
 const LedgerPage = lazy(() => import('./pages/Ledger'))
 const WithdrawalsPage = lazy(() => import('./pages/Withdrawals'))
+const RanksPage = lazy(() => import('./pages/Ranks'))
 
 export const routes = [
   { path: '/login', element: <LoginPage /> },
@@ -15,4 +16,5 @@ export const routes = [
   { path: '/users', element: <RequireAuth adminOnly><UsersPage /></RequireAuth> },
   { path: '/ledger', element: <RequireAuth adminOnly><LedgerPage /></RequireAuth> },
   { path: '/withdrawals', element: <RequireAuth adminOnly><WithdrawalsPage /></RequireAuth> },
+  { path: '/ranks', element: <RequireAuth adminOnly><RanksPage /></RequireAuth> },
 ]

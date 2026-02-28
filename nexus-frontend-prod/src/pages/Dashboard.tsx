@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query'
 import { PageShell } from '../components/layout/PageShell'
 import { KpiCard } from '../components/common/KpiCard'
 import { ErrorState } from '../components/common/ErrorState'
+import { ROIDashboard } from '../components/ROIDashboard'
+import { RankCard } from '../components/RankCard'
 import { api } from '../lib/api'
 
 export function Dashboard() {
@@ -25,6 +27,7 @@ export function Dashboard() {
 
   return (
     <PageShell title="Dashboard">
+      {/* Summary KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <KpiCard
           label="Wallet Balance"
@@ -52,7 +55,8 @@ export function Dashboard() {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Team Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <KpiCard
           label="Total Team Size"
           value={data?.totalTeamSize || 0}
@@ -71,6 +75,18 @@ export function Dashboard() {
           icon="📦"
           loading={isLoading}
         />
+      </div>
+
+      {/* Rank Progress Section */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Rank & MLM</h2>
+        <RankCard />
+      </div>
+
+      {/* ROI Dashboard Section */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">ROI Earnings</h2>
+        <ROIDashboard />
       </div>
     </PageShell>
   )

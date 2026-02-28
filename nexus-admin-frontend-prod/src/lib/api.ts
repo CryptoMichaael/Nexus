@@ -65,3 +65,10 @@ export function adminAdjustLedger(userId: string, token: string, amount: number 
 export function adminGetWithdrawals() {
   return apiClient.get('/v1/withdrawals')
 }
+
+export const api = {
+  get: (url: string) => apiClient.get(url),
+  post: (url: string, data?: any) => apiClient.post(url, data),
+  put: (url: string, data?: any) => apiClient.put(url, data),
+  delete: (url: string) => apiClient.delete(url),
+}

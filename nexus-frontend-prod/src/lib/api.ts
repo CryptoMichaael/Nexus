@@ -286,4 +286,10 @@ export const api = {
     })
     return res.data as { ok: true; id: string }
   },
+
+  // ROI Status
+  get: async (endpoint: string) => {
+    const res = await getAxios().get(endpoint)
+    return res
+  },
 }

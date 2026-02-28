@@ -11,6 +11,7 @@ import usersRoutes from './modules/users/routes'
 import depositsRoutes from './modules/deposits/routes'
 import withdrawalsRoutes from './modules/withdrawals/routes'
 import adminRoutes from './modules/admin/routes'
+import rankRoutes from './modules/ranks/routes'
 import { errorHandler } from './middlewares/errorHandler'
 import { requestId } from './middlewares/rateLimit'
 import { registerAuthMiddleware } from './middlewares/auth'
@@ -80,6 +81,7 @@ app.register(authRoutes, { prefix: '/v1/auth' })
   app.register(depositsRoutes, { prefix: '/v1' })
   app.register(withdrawalsRoutes, { prefix: '/v1' })
   app.register(adminRoutes, { prefix: '/v1/admin' })
+  app.register(rankRoutes, { prefix: '/v1/ranks' })
 
   app.get('/v1/health', async () => ({ ok: true }))
 

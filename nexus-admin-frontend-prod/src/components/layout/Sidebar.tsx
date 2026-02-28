@@ -6,6 +6,7 @@ const navItems = [
   { path: '/users', label: 'Users' },
   { path: '/ledger', label: 'Ledger' },
   { path: '/withdrawals', label: 'Withdrawals' },
+  { path: '/ranks', label: 'Ranks' },
 ]
 
 interface SidebarProps {
