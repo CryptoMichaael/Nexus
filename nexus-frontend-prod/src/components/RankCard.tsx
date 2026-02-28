@@ -40,7 +40,7 @@ export const RankCard: React.FC = () => {
     queryKey: ['rank-progress'],
     queryFn: async () => {
       const response = await api.get('/v1/ranks/progress');
-      return response.data;
+      return response.data?.data || response.data;
     },
     refetchInterval: 60000, // Refresh every minute
   });
@@ -49,7 +49,8 @@ export const RankCard: React.FC = () => {
     queryKey: ['rank-directs'],
     queryFn: async () => {
       const response = await api.get('/v1/ranks/directs');
-      return response.data;
+      const data = response.data?.data || response.data;
+      return Array.isArray(data) ? data : [];
     },
     refetchInterval: 60000,
   });
@@ -63,8 +64,9 @@ export const RankCard: React.FC = () => {
     );
   }
 
-  if (!progress || !directs) return null;
+  if (!progress) return null;
 
+  const safeDirects = Array.isArray(directs) ? directs : [];
   const currentRankInfo = RANK_INFO[progress.currentRank as keyof typeof RANK_INFO] || RANK_INFO.L0;
   const nextRankInfo = progress.nextRank
     ? RANK_INFO[progress.nextRank as keyof typeof RANK_INFO]
@@ -191,10 +193,10 @@ export const RankCard: React.FC = () => {
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Your Direct Referrals ({directs.length})
+            Your Direct Referrals ({safeDirects.length})
           </h3>
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-            {directs.filter((d) => d.isQualified).length} qualified for rank requirements
+            {safeDirects.filter((d) => d.isQualified).length} qualified for rank requirements
           </p>
         </div>
         <div className="overflow-x-auto">
@@ -222,7 +224,7 @@ export const RankCard: React.FC = () => {
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-              {directs.map((direct) => {
+              {safeDirects.map((direct) => {
                 const rankInfo = RANK_INFO[direct.currentRank as keyof typeof RANK_INFO] || RANK_INFO.L0;
                 return (
                   <tr key={direct.userId}>
