@@ -7,9 +7,9 @@
 import { Pool } from 'pg'
 import { logger } from '../config/logger'
 import { WeeklyRankPoolService } from '../services/weeklyRankPool.service'
-import { envServer } from '../config/envServer'
+import { env } from '../config/envServer'
 
-const pool = new Pool({ connectionString: envServer.DATABASE_URL })
+const pool = new Pool({ connectionString: env.DATABASE_URL })
 const weeklyPoolService = new WeeklyRankPoolService(pool)
 
 async function runWeeklyPool() {

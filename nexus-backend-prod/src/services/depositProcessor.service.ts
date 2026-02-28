@@ -7,9 +7,9 @@
  */
 
 import { Pool, PoolClient } from 'pg';
-import { logger } from '../../config/logger';
-import { toAtomic, fromAtomic, dbToBigInt, bigIntToDb } from '../../utils/bigintMath';
-import { RankService } from '../rank.service';
+import { logger } from '../config/logger';
+import { toAtomic, fromAtomic, dbToBigInt, bigIntToDb } from '../utils/bigintMath';
+import { RankService } from './rank.service';
 
 const VALID_TOKENS = ['USDT', 'ETH'];
 const MIN_DEPOSIT_FOR_RANK = toAtomic('100'); // $100 minimum
